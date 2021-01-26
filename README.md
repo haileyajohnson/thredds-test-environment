@@ -6,6 +6,25 @@ The Docker Image will be used as the basis for a custom GitHub action for testin
 Both image types are based off the latest available image, AMI or Docker, for `ubuntu 20.04`.
 The AMI and docker images produced by packer are both called "thredds-test-environment".
 
+## Requirements
+
+* Packer ([download](https://www.packer.io/downloads))
+* Docker, for building the Docker Image ([download](https://www.docker.com/products/docker-desktop))
+* AWS EC2 Credentials, for building the AMI.
+  * The packer configuration expects the AWS credentials to be stored under a profile named `ucar-unidata-profile`
+    One way of setting this up would be to have an entry in the file `<home-directory>/.aws/credentials` that looks like the following:
+    ~~~
+    [ucar-unidata-profile]
+    aws_access_key_id=XXXXXXXXX
+    aws_secret_access_key=XXXXXXXXX
+    ~~~
+    See the [packer docs](https://www.packer.io/docs/builders/amazon#authentication) for more information.
+
+While this project's packer configuration relies heavily on Ansible, you do not need to have Ansible installed locally.
+We utilize the `ansible-local` provisioner of Packer, which means Ansible is run on the remote/guest machine, and not on the build machine (the machine running packer).
+This does mean that part of the Packer build process includes installing Ansible on the remote/guest machine (see `packer/provisioners/scripts/bootstrap-common.sh`), which does add some time to the total build process (approximately two minutes).
+However, Since Ansible does not support the use of Windows systems as a control node, the ability create the THREDDS test environment images across all major platforms outweighs the extra cost in time.
+
 ## Building the images
 
 To generate the golden AMI and Docker images, start off by validating the packer configuration by running:
@@ -118,7 +137,7 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
 ### Docker Image
 
 ~~~
- docker-commit: Tuesday 26 January 2021  02:31:10 +0000 (0:00:02.518)       0:27:27.982 *******
+  docker-commit: Tuesday 26 January 2021  02:31:10 +0000 (0:00:02.518)       0:27:27.982 *******
   docker-commit: ===============================================================================
   docker-commit: Wait for the gradle builds to complete. ------------------------------- 502.58s
   docker-commit: libnetcdf-and-deps : Install hdf5. ------------------------------------ 196.71s
