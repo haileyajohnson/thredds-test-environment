@@ -14,5 +14,8 @@ Thumbs.db
 # Locally downloaded Adoptium install files
 packer/provisioners/ansible/roles/adoptium/files/*.tar.gz
 
+# Docker Image (.tar) produced by docker-export builder
+image.tar
+
 # visual studio code workspace
 workspace.code-workspace
