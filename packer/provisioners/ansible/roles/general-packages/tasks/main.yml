@@ -1,0 +1,5 @@
+---
+- name: Install os managed tools.
+  package:
+    name: "{{ needed_packages }}"
+    state: latest

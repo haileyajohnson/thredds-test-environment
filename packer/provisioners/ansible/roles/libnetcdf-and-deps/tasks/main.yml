@@ -1,0 +1,26 @@
+---
+# Set builder-type specific variables
+# Note: packer_builder_type is automatically made available as an ansible
+# variable by packer.
+- name: Assign variables based on Packer builder type.
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ packer_builder_type }}.yml"
+    - "default_builder.yml"
+
+- name: Install devtools.
+  import_role:
+    name: general-packages
+  vars:
+    needed_packages:
+      - build-essential
+      - m4
+
+- include_tasks: zlib.yml
+  tags: [ zlib ]
+
+- include_tasks: hdf5.yml
+  tags: [ hdf5 ]
+
+- include_tasks: netcdf-c.yml
+  tags: [ netcdf-c ]

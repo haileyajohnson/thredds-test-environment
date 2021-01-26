@@ -1,0 +1,6 @@
+---
+- name: Create users.
+  user:
+    name: "{{ item.name }}"
+    shell: "{{ item.shell | default('/bin/bash') }}"
+  loop: "{{ users }}"

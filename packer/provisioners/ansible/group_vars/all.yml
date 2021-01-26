@@ -1,0 +1,43 @@
+---
+# These variables are available to all roles.
+install_dir: /usr/thredds-test-environment
+tmp_dir: /tmp/thredds-ansible-tmp
+
+# Shared between gradle-builds-cache-bootstrap and cleanup roles.
+tmp_repo_dir: "{{ tmp_dir }}/git_repositories"
+gradle_user_home: "/home/{{ thredds_test_user }}/.gradle"
+
+# The variable thredds_test_user is defined in the packer configuration
+# located at packer/thredds-test-env.json.
+
+network_call_time_between_retries: 30 # seconds
+network_call_retries: 3
+
+# Asynchronous tasks settings
+async_poll_value_move_on: 0 # seconds
+
+default_async_timeout: 300 # seconds
+
+zlib_async_timeout: 300 # seconds (5 minutes)
+zlib_async_check_interval: 15 # seconds
+zlib_async_check_retries: 20
+
+hdf5_async_timeout: 1800 # seconds (30 minutes)
+hdf5_async_check_interval: 60 # seconds
+hdf5_async_check_retries: 30
+
+netcdf_c_async_timeout: 1800 # seconds (30 minutes)
+netcdf_c_async_check_interval: 120 # seconds
+netcdf_c_async_check_retries: 30
+
+miniconda_async_timeout: 1800 # seconds (30 minutes)
+miniconda_async_check_interval: 60 # seconds
+miniconda_async_check_retries: 30
+
+git_clone_async_timeout: 600 # seconds (10 minutes)
+git_clone_async_check_interval: 20 # seconds
+git_clone_async_check_retries: 30
+
+bootstrap_gradle_cache_async_timeout: 1800 # seconds (30 minutes)
+bootstrap_gradle_cache_async_check_interval: 60 # seconds
+bootstrap_gradle_cache_async_check_retries: 30

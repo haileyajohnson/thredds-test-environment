@@ -1,0 +1,7 @@
+---
+- name: Copy local Adoptium files.
+  copy:
+    src: "{{ base_install_name }}{{ item }}.tar.gz"
+    dest: "{{ tmp_dir }}"
+    mode: 0755
+  loop: "{{ java_versions }}"

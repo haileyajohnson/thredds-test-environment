@@ -1,0 +1,33 @@
+---
+- name: Download and unpack zlib.
+  unarchive:
+    src: https://downloads.sourceforge.net/project/libpng/zlib/{{ zlib_version }}/zlib-{{ zlib_version }}.tar.gz
+    dest: "{{ tmp_dir }}"
+    creates: "{{ zlib_src_dir }}"
+    remote_src: yes
+  register: unarchive_result
+  retries: "{{ network_call_retries }}"
+  delay: "{{ network_call_time_between_retries }}"
+  until: unarchive_result.failed == false
+
+- name: Configure zlib.
+  command: ./configure --prefix={{ install_dir }}
+  args:
+    chdir: "{{ zlib_src_dir }}"
+    creates: "{{ zlib_src_dir }}/configure.log"
+
+- name: Install zlib.
+  command: "make -j{{ make_jobs }} install"
+  args:
+    chdir: "{{ zlib_src_dir }}"
+    creates: "{{ install_dir }}/lib/libz.so"
+
+# This does not take long to run, but will run asynchronously like the other
+# make check tasks.
+- name: Test zlib.
+  command: "make -j{{ make_jobs }} check"
+  args:
+    chdir: "{{ zlib_src_dir }}"
+  async: "{{ zlib_async_timeout }}"
+  poll: "{{ async_poll_value_move_on }}"
+  register: async_zlib

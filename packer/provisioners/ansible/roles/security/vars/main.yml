@@ -1,0 +1,21 @@
+---
+# On Ubuntu, any readable file that ends with .sh and is located in
+# /etc/profile.d/ will be sourced by /etc/profile.
+custom_bash_profile_src: thredds_test_bash_profile.sh
+custom_bash_profile_dest: "/etc/profile.d/{{ custom_bash_profile_src }}"
+
+users:
+  - name: "{{ thredds_test_user }}"
+    shell: /bin/bash
+
+files2copy:
+  - label: "maven settings"
+    src: maven-settings.xml
+    dest: "/home/{{ thredds_test_user }}/.m2/settings.xml"
+    mode: "0755"
+
+templates2copy:
+  - label: "custom bash profile"
+    src: "{{ custom_bash_profile_src }}"
+    dest: "{{ custom_bash_profile_dest }}"
+    mode: "0755"

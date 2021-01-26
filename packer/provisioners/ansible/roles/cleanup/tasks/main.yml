@@ -1,0 +1,35 @@
+---
+- name: "Cleanup temporary git repository directory."
+  file:
+    path: "{{ tmp_repo_dir }}"
+    state: absent
+
+- name: Check if gradle cache directory exists.
+  stat:
+    path: "{{ gradle_user_home }}"
+  register: gradle_user_home_check
+
+- name: "Change owner of gradle cache directory to be {{ thredds_test_user }}."
+  when: gradle_user_home_check.stat.exists == true
+  file:
+    path: "{{ gradle_user_home }}"
+    owner: "{{ thredds_test_user }}"
+    recurse: yes
+
+- name: Prepare to add thredds-test-environment native libraries to run-time linker
+  copy:
+    dest: "/etc/ld.so.conf.d/tte.conf"
+    content: "{{ install_dir }}/lib"
+
+- name: Update the run-time linker cache to include any newly built libraries.
+  command: ldconfig
+
+- name: "Cleanup the temporary build directory."
+  file:
+    path: "{{ tmp_dir }}"
+    state: absent
+
+- name: Remove packages that are not needed in final environment.
+  package:
+    name: "{{ purgeable_packages }}"
+    state: absent

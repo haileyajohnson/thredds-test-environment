@@ -1,0 +1,37 @@
+---
+- name: Download and unpack netcdf-c.
+  unarchive:
+    src: "https://www.unidata.ucar.edu/downloads/netcdf/ftp/netcdf-c-{{ netcdf_version }}.tar.gz"
+    dest: "{{ tmp_dir }}"
+    creates: "{{ netcdf_src_dir }}"
+    remote_src: yes
+  register: unarchive_result
+  retries: "{{ network_call_retries }}"
+  delay: "{{ network_call_time_between_retries }}"
+  until: unarchive_result.failed == false
+
+- name: Configure netCDF-c.
+  command: ./configure --prefix={{ install_dir }} --disable-dap --disable-utilities --disable-static
+  args:
+    chdir: "{{ netcdf_src_dir }}"
+    creates: "{{ netcdf_src_dir }}/config.log"
+  environment:
+    CPPFLAGS: -I{{ install_dir }}/include
+    LDFLAGS: -L{{ install_dir }}/lib
+
+- name: Install netCDF-c.
+  command: "make -j{{ make_jobs }} install"
+  args:
+    chdir: "{{ netcdf_src_dir }}"
+    creates: "{{ install_dir }}/lib/libnetcdf.so"
+
+# Run after install for performance reasons, as check can take quite some time
+# to run. Will check status and wait (if not finished) near the end of the
+# ansible provision process.
+- name: Test netCDF-c.
+  command: "make -j{{ make_jobs }} check "
+  args:
+    chdir: "{{ netcdf_src_dir }}"
+  async: "{{ netcdf_c_async_timeout }}"
+  poll: "{{ async_poll_value_move_on }}"
+  register: async_netcdf_c

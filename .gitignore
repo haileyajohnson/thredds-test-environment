@@ -1,0 +1,18 @@
+# OS generated files 
+.DS_Store*
+ehthumbs.db
+
+# On Windows (and Mac?), it appears that the "Icon" line is followed by two blank lines.
+# DO NOT DELETE THEM. They are actually carraige returns ('\r'), and are part of the pattern.
+# See https://github.com/github/gitignore/pull/183
+Icon
+Thumbs.db
+*.swp
+*.*~
+._*
+
+# Locally downloaded Adoptium install files
+packer/provisioners/ansible/roles/adoptium/files/*.tar.gz
+
+# visual studio code workspace
+workspace.code-workspace

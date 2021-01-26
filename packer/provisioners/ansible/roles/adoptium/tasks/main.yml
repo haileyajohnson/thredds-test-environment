@@ -1,0 +1,48 @@
+---
+- name: Create installation directories, if they do not exist.
+  file:
+    path: "{{ install_dir }}/{{ base_install_name }}{{ item }}"
+    state: directory
+  loop: "{{ java_versions }}"
+  loop_control:
+    label: "Create Directory for Adoptium {{ item }} Installation"
+
+# Not sure why, but sometimes we cannot fetch adoptium 11 from aws (8 works
+# just fine). When that happens, we can use a local copy of the tar.gz files
+# rather than using the web API to fetch them. Uncomment the following task,
+# as well as the "when" statement under the fetch_remote task below to use
+# the local workflow. You will need to run one of the scripts in ../files
+# prior to running packer to make sure the tar.gz files exists and are
+# up-to-date.
+#- import_tasks: fetch_local.yml
+#  tags: [ fetch-local ]
+#  when: packer_builder_type == "amazon-ebs"
+
+- import_tasks: fetch_remote.yml
+  tags: [ fetch-remote ]
+  #when: packer_builder_type != "amazon-ebs"
+
+- name: Unpack Adoptium Java Installations.
+  unarchive:
+    src: "/tmp/{{ base_install_name }}{{ item }}.tar.gz"
+    dest: "{{ install_dir }}/{{ base_install_name }}{{ item }}"
+    extra_opts: [--strip-components=1]
+    creates: "{{ install_dir }}/{{ base_install_name }}{{ item }}/bin"
+    remote_src: yes
+  loop: "{{ java_versions }}"
+  loop_control:
+    label: "Unpack Adoptium {{ item }}"
+
+- name: Read versions of installed Adoptium.
+  shell: "{{ install_dir }}/{{ base_install_name }}{{ item }}/bin/java -version"
+  register: shell_output
+  loop: "{{ java_versions }}"
+  loop_control:
+    label: "Read Adoptium {{ item }} Version Information"
+
+- name: Print versions of installed Adoptium Java instances.
+  debug:
+    msg="{{ item.stderr_lines[1] }}"
+  loop: "{{ shell_output.results }}"
+  loop_control:
+    label: "Adoptium {{ item.item }} Version:"

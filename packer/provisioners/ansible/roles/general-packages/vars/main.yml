@@ -1,0 +1,5 @@
+---
+needed_packages:
+ - sed # Netcdf-java github action needs sed
+ - dos2unix # Used to ensure files have proper line ending when provisioning
+ - git

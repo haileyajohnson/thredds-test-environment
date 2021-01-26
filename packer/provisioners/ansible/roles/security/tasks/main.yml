@@ -1,0 +1,55 @@
+---
+- include_tasks: users-and-groups.yml
+  tags: [ users-and-groups ]
+
+- include_tasks: ssh.yml
+  tags: [ ssh ]
+
+- name: Create .m2 directory for user
+  file:
+    path: "/home/{{ thredds_test_user }}/.m2"
+    owner: "{{ thredds_test_user }}"
+    state: directory
+    mode: '0755'
+    recurse: yes
+
+- name: Copy local files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ files2copy }}"
+  loop_control:
+    label: "{{ item.label }}"
+
+- name: Copy local templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode }}"
+  loop: "{{ templates2copy }}"
+  loop_control:
+    label: "{{ item.label }}"
+
+# When Bash is started non-interactively, it looks for the variable BASH_ENV
+# in the environment, expands its value if it is defined, and uses the
+# expanded value as the name of a script to source (see 
+# https://www.gnu.org/software/bash/manual/html_node/Bash-Startup-Files.html#Invoked-non_002dinteractively).
+- name: Add "BASH_ENV" to /etc/environment.
+  lineinfile:
+    dest: /etc/environment
+    state: present
+    regexp: "^BASH_ENV"
+    line: "BASH_ENV={{ item.dest }}"
+  when: item.src == custom_bash_profile_src
+  loop: "{{ templates2copy }}"
+  loop_control:
+    label: "{{ item.label }}"
+
+- name: Ensure proper line endings in copied files and templates
+  shell: "dos2unix {{ item.dest }}"
+  # We want to ensure this on any file that we copy from the host, so we
+  # combine files2copy and templates2copy using a list append operation.
+  loop: "{{ files2copy + templates2copy }}"
+  loop_control:
+    label: "{{ item.label }}"

@@ -1,0 +1,3 @@
+---
+# Use make with j1 option as a default.
+make_jobs: 1

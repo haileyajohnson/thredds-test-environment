@@ -1,0 +1,34 @@
+---
+- name: Download and unpack hdf5.
+  unarchive:
+    src: "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-{{ hdf5_version_major }}.{{ hdf5_version_minor }}/hdf5-{{ hdf5_version_full }}/src/hdf5-{{ hdf5_version_full }}.tar.gz"
+    dest: "{{ tmp_dir }}"
+    creates: "{{ hdf5_src_dir }}"
+    remote_src: yes
+  register: unarchive_result
+  retries: "{{ network_call_retries }}"
+  delay: "{{ network_call_time_between_retries }}"
+  until: unarchive_result.failed == false
+
+- name: Configure hdf5.
+  command: ./configure --prefix={{ install_dir }} --with-zlib={{ install_dir }}
+  args:
+    chdir: "{{ hdf5_src_dir }}"
+    creates: "{{ hdf5_src_dir }}/config.log"
+
+- name: Install hdf5.
+  command: "make -j{{ make_jobs}} install"
+  args:
+    chdir: "{{ hdf5_src_dir }}"
+    creates: "{{ install_dir }}/lib/libhdf5.so"
+
+# Run after install for performance reasons, as check can take quite some time
+# to run. Will check status and wait (if not finished) near the end of the
+# ansible provision process.
+- name: Test HDF5.
+  command: "make -j{{ make_jobs}} check"
+  args:
+    chdir: "{{ hdf5_src_dir }}"
+  async: "{{ hdf5_async_timeout }}"
+  poll: "{{ async_poll_value_move_on }}"
+  register: async_hdf5

@@ -1,0 +1,6 @@
+---
+# These packages are installed by other roles during the provisioning process,
+# but are not needed in the final thredds-test-environment.
+purgeable_packages:
+  - build-essential
+  - m4

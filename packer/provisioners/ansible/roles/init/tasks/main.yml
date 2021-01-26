@@ -1,0 +1,5 @@
+---
+- name: "Ensure the temporary ansible build directory exists."
+  file:
+    path: "{{ tmp_dir }}"
+    state: directory

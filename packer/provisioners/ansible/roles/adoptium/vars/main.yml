@@ -1,0 +1,7 @@
+---
+base_install_name: adoptium
+
+java_versions:
+  - 8
+  - 11
+  - 14
