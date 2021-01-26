@@ -1,0 +1,22 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Packer Template Configuration Checks
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    name: Packer Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      # validate templates
+      - name: Validate Template
+        uses: operatehappy/packer-github-actions@master
+        with:
+          command: validate
+          working_directory: packer
+          target: thredds-test-env.json
