@@ -1,5 +1,5 @@
 ---
-- name: Fetch latest Adoptium Java builds.
+- name: Fetch latest Temurin Java builds.
   uri:
     url: "https://api.adoptopenjdk.net/v3/binary/latest/{{ item }}/ga/linux/x64/jdk/hotspot/normal/adoptopenjdk"
     method: GET

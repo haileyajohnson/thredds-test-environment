@@ -11,8 +11,8 @@ Thumbs.db
 *.*~
 ._*
 
-# Locally downloaded Adoptium install files
-packer/provisioners/ansible/roles/adoptium/files/*.tar.gz
+# Locally downloaded Temurin install files
+packer/provisioners/ansible/roles/temurin/files/*.tar.gz
 
 # Docker Image (.tar) produced by docker-export builder
 image.tar

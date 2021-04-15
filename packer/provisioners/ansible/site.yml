@@ -38,10 +38,15 @@
         name: security
       tags: [ security ]
 
-    - name: Include 'adoptium' role.
+    - name: Include 'temurin' role.
       include_role:
-        name: adoptium
-      tags: [ adoptium ]
+        name: temurin
+      tags: [ temurin ]
+
+    - name: Include 'zulu' role.
+      include_role:
+        name: zulu
+      tags: [ zulu ]
 
     - name: Include 'maven' role.
       include_role:

@@ -81,7 +81,7 @@ The `ansible/` directory is laid out as follows:
 
 We use the following roles when provisioning our images:
 
-* `adoptium`: Obtain and install Adoptium 8, 11, and 14.
+* `temurin`: Obtain and install Temurin 8, 11, and 14.
 * `cleanup`: General cleanup related tasks, such as remove the temporary build directory and running `ldconfig`
 * `general-packages`: Install general packages needed for the build environment using the OS package manager.
 * `gradle-builds-cache-bootstrap`: Pull in and build netCDF-Java to populate the gradle cache for user ubuntu.
@@ -95,6 +95,7 @@ We use the following roles when provisioning our images:
   * Configure `ssh` (uses modified version of a task from Jeff Geerling's [ansible-role-security](https://github.com/geerlingguy/ansible-role-security) project - see `packer/provisioners/ansible/roles/security/README.md`).
   * Configure a system wide bash environment.
 * `test-data-mount-prep`: Prepare the environment to mount the `thredds-test-data` datasets when available (currently used on Jenkins worker nodes).
+* `zulu`: Obtain and install Zulu 8, 11, and 14.
 
 We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a Ruby environment ([geerlingguy.ruby](https://galaxy.ansible.com/geerlingguy/ruby)).
 
@@ -116,13 +117,17 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
  * version: `3.6.3`
 
 ### Java:
- * Adoptium (latest version available from adoptopenjdk.net)
-   * 8 (`/usr/thredds-test-environment/adoptium8`)
-   * 11 (`/usr/thredds-test-environment/adoptium11`)
-   * 14 (`/usr/thredds-test-environment/adoptium14`)
+ * Temurin (latest version available from adoptopenjdk.net, _not officially called Temurin yet_)
+   * 8 (`/usr/thredds-test-environment/temurin8`)
+   * 11 (`/usr/thredds-test-environment/temurin11`)
+   * 14 (`/usr/thredds-test-environment/temurin14`)
+ * Zulu (latest version available from azul.com)
+   * 8 (`/usr/thredds-test-environment/zulu8`)
+   * 11 (`/usr/thredds-test-environment/zulu11`)
+   * 14 (`/usr/thredds-test-environment/zulu14`)
 
 ### Bash functions:
- * `select-java <version>` (where version is 8, 11, or 14)
+ * `select-java <version> <vendor>` (where version is 8, 11, or 14, and vendor is `adopt` or `zulu`)
  * `activate-conda`
 
 ### Latest version available via the OS Package Manager
@@ -143,11 +148,11 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
   docker-commit: libnetcdf-and-deps : Install hdf5. ------------------------------------ 196.71s
   docker-commit: general-packages : Install os managed tools. -------------------------- 156.95s
   docker-commit: general-packages : Install os managed tools. -------------------------- 147.62s
-  docker-commit: adoptium : Fetch latest Adoptium Java builds. ------------------------- 142.41s
+  docker-commit: temurin : Fetch latest Temurin Java builds. ------------------------- 142.41s
   docker-commit: general-packages : Install os managed tools. -------------------------- 129.50s
   docker-commit: geerlingguy.ruby : Install ruby and other required dependencies. ------- 85.59s
   docker-commit: libnetcdf-and-deps : Configure netCDF-c. ------------------------------- 47.61s
-  docker-commit: adoptium : Unpack Adoptium Java Installations. ------------------------- 47.37s
+  docker-commit: temurin : Unpack Temurin Java Installations. ------------------------- 47.37s
   docker-commit: maven : Fetch Latest Maven. -------------------------------------------- 32.04s
   docker-commit: gradle-builds-cache-bootstrap : Fetch latest commits from github. ------ 31.14s
   docker-commit: libnetcdf-and-deps : Download and unpack hdf5. ------------------------- 21.72s
@@ -169,8 +174,8 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
   ami: Wait for the gradle builds to complete. ------------------------------- 606.89s
   ami: Wait for the HDF5 async test task to complete. ------------------------ 455.60s
   ami: libnetcdf-and-deps : Install hdf5. ------------------------------------ 335.69s
-  ami: adoptium : Unpack Adoptium Java Installations. ------------------------- 55.85s
-  ami: adoptium : Fetch latest Adoptium Java builds. -------------------------- 38.67s
+  ami: temurin : Unpack Temurin Java Installations. ------------------------- 55.85s
+  ami: temurin : Fetch latest Temurin Java builds. -------------------------- 38.67s
   ami: gradle-builds-cache-bootstrap : Fetch latest commits from github. ------ 32.56s
   ami: geerlingguy.ruby : Install ruby and other required dependencies. ------- 31.75s
   ami: Wait for netcdf-c async test task to complete. ------------------------- 31.35s

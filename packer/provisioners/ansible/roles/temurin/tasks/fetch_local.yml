@@ -1,5 +1,5 @@
 ---
-- name: Copy local Adoptium files.
+- name: Copy local Temurin files.
   copy:
     src: "{{ base_install_name }}{{ item }}.tar.gz"
     dest: "{{ tmp_dir }}"
