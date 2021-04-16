@@ -13,14 +13,6 @@
     mode: '0755'
     recurse: yes
 
-- name: Create github workspace directory for user (needed for github actions)
-  file:
-    path: "/github/workspace/.gradle"
-    owner: "{{ thredds_test_user }}"
-    state: directory
-    mode: '0755'
-    recurse: yes
-
 - name: Copy local files
   copy:
     src: "{{ item.src }}"
