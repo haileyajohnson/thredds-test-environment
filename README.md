@@ -81,7 +81,6 @@ The `ansible/` directory is laid out as follows:
 
 We use the following roles when provisioning our images:
 
-* `temurin`: Obtain and install Temurin 8, 11, and 14.
 * `cleanup`: General cleanup related tasks, such as remove the temporary build directory and running `ldconfig`
 * `general-packages`: Install general packages needed for the build environment using the OS package manager.
 * `gradle-builds-cache-bootstrap`: Pull in and build netCDF-Java to populate the gradle cache for user ubuntu.
@@ -94,6 +93,7 @@ We use the following roles when provisioning our images:
   * Add a default `maven-settings.xml` file configured to publish to the Unidata artifacts server.
   * Configure `ssh` (uses modified version of a task from Jeff Geerling's [ansible-role-security](https://github.com/geerlingguy/ansible-role-security) project - see `packer/provisioners/ansible/roles/security/README.md`).
   * Configure a system wide bash environment.
+* `temurin`: Obtain and install Temurin 8, 11, and 14.
 * `test-data-mount-prep`: Prepare the environment to mount the `thredds-test-data` datasets when available (currently used on Jenkins worker nodes).
 * `zulu`: Obtain and install Zulu 8, 11, and 14.
 
@@ -126,6 +126,9 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
    * 11 (`/usr/thredds-test-environment/zulu11`)
    * 14 (`/usr/thredds-test-environment/zulu14`)
 
+### Ruby
+  * ruby (via [geerlingguy.ruby](https://galaxy.ansible.com/geerlingguy/ruby) from [Ansible Galaxy](https://galaxy.ansible.com/))
+
 ### Bash functions:
  * `select-java <version> <vendor>` (where version is 8, 11, or 14, and vendor is `adopt` or `zulu`)
  * `activate-conda`
@@ -134,8 +137,9 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
   * sed
   * dos2unix
   * git
+  * fonts-dejavu
+  * fontconfig
   * openssh-server
-  * ruby (via `[geerlingguy.ruby](https://galaxy.ansible.com/geerlingguy/ruby)` from [Ansible Galaxy](https://galaxy.ansible.com/))
 
 ## Example Timings
 
