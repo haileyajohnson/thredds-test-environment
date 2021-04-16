@@ -12,6 +12,11 @@ jobs:
         uses: actions/checkout@v2
       - uses: hashicorp/packer-github-actions@master
         with:
+          command: init
+          working_directory: .github/packer_files
+          target: plugins.pkr.json
+      - uses: hashicorp/packer-github-actions@master
+        with:
           command: build
           arguments: "--only=docker-github-action"
           working_directory: packer
