@@ -4,8 +4,16 @@
     "aws_secret_key": "",
     "thredds_test_user": "ubuntu",
     "base_ami": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*",
-    "base_docker_image": "ubuntu:20.04"
+    "base_docker_image": "ubuntu:20.04",
+    "gha_actor": "{{env `github.actor`}}",
+    "gha_token": "{{env `secrets.GITHUB_TOKEN`}}"
   },
+  "sensitive-variables": [
+    "aws_access_key",
+    "aws_secret_key",
+    "gha_actor",
+    "gha_token"
+  ],
   "builders": [
     {
       "name": "ami",
@@ -60,6 +68,17 @@
         "USER {{user `thredds_test_user`}}",
         "ENTRYPOINT [\"/bin/bash\"]"
       ]
+    },
+    {
+      "name": "docker-github-action",
+      "type": "docker",
+      "image": "{{user `base_docker_image`}}",
+      "commit": true,
+      "changes": [
+        "USER root",
+        "ENV GITHUB_ACTIONS=\"YEP\"",
+        "ENTRYPOINT [\"/entrypoint.sh\"]"
+      ]
     }
   ],
   "provisioners": [
@@ -76,6 +95,12 @@
       "type": "shell",
       "script": "provisioners/scripts/bootstrap_last_aws.sh",
       "only": "ami"
+    },
+    {
+      "type": "file",
+      "source": "provisioners/file/entrypoint.sh",
+      "destination": "/entrypoint.sh",
+      "only": [ "docker-github-action" ]
     },
     {
       "type": "ansible-local",
@@ -104,6 +129,11 @@
     },
     {
       "type": "shell",
+      "inline": ["dox2unix /entrypoint.sh"],
+      "only": [ "docker-github-action" ]
+    },
+    {
+      "type": "shell",
       "script": "provisioners/scripts/cleanup.sh"
     }
   ],
@@ -113,6 +143,19 @@
       "repository": "docker.unidata.ucar.edu/thredds-test-environment",
       "tags": "latest",
       "only": [ "docker-commit" ]
+    },
+    {
+      "type": "docker-tag",
+      "repository": "ghcr.io/unidata/thredds-test-environment/thredds-test-action",
+      "tags": "latest",
+      "only": [ "docker-github-action" ]
+    },
+    {
+      "type": "docker-push",
+      "login_username": "{{user `gha_actor`}}",
+      "login_password": "{{user `gha_token`}}",
+      "login_server": "https://ghcr.io/",
+      "only": [ "docker-github-action" ]
     }
   ]
 }
