@@ -22,19 +22,53 @@ function update-path() {
         # Use java located in bin directory of JAVA_HOME, if set.
         export PATH="${JAVA_HOME}/bin:${DEFAULT_PATH}"
     else
-        # Use java 11 by default.
-        export PATH="{{ install_dir }}/adoptium{{ default_java_version }}/bin:${DEFAULT_PATH}"
+        # Use temurin java 11 by default.
+        export PATH="{{ install_dir }}/{{ default_java_vendor }}{{ default_java_version }}/bin:${DEFAULT_PATH}"
     fi
 }
 
+# select-java vendor version
+# example:
+#    select-java 11 zulu
+#
+# vendor: [ temurin || zulu ] (no default)
+# version: [ 8 || 11 || 14 ] (no default)
+#
 function select-java() {
-    MAYBE_JAVA_HOME="{{ install_dir }}/adoptium$1"
-    if [ -d ${MAYBE_JAVA_HOME} ]
+    VALID_VENDORS=("temurin" "zulu")
+    # Caller must supply exactly two arguments.
+    if [ ! $# -eq 2 ]
     then
-        export JAVA_HOME=${MAYBE_JAVA_HOME}
-        update-path
+        echo "Invalid arguments. Must supply both \"vendor\" and \"version\", in that order."
     else
-        echo "Error: Directory ${MAYBE_JAVA_HOME} does not exists."
+        VENDOR=$1
+        VERSION=$2
+        # Validate the choice of vendor.
+        if [[ ! " ${VALID_VENDORS[@]} " =~ " ${VENDOR} " ]]
+        then
+            VALID=$(printf " || %s" "${VALID_VENDORS[@]}")
+            VALID=${VALID:4}
+            echo "Invalid value \"${VENDOR}\". Vendor must be one of [ ${VALID} ]"
+        else
+            MAYBE_JAVA_HOME="{{ install_dir }}/${VENDOR}${VERSION}"
+            # Ensure the combination of vendor and version is available on the system.
+            if [ -d ${MAYBE_JAVA_HOME} ]
+            then
+                export JAVA_HOME=${MAYBE_JAVA_HOME}
+                update-path
+                # If we reach this point, consider the function call successful by
+                # setting variable SUCCESS (value does not matter)
+                SUCCESS="SET"
+            else
+                echo "Error: Directory ${MAYBE_JAVA_HOME} does not exists."
+            fi
+        fi
+    fi
+
+    # If the variable SUCCESS is not set, there was an error somewhere, so
+    # print out a message that describes the status of JAVA_HOME
+    if [ -z ${SUCCESS+x} ]
+    then
         if ! [ -z "${JAVA_HOME}" ]
         then
             echo "Will continue to use JAVA_HOME=${JAVA_HOME}"

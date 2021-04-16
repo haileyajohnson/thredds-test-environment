@@ -1,5 +1,5 @@
 ---
-base_install_name: adoptium
+base_install_name: temurin
 
 java_versions:
   - 8

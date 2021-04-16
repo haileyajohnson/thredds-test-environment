@@ -1,7 +1,7 @@
 ---
-- name: Fetch latest Adoptium Java builds.
+- name: Fetch latest Zulu Java builds.
   uri:
-    url: "https://api.adoptopenjdk.net/v3/binary/latest/{{ item }}/ga/linux/x64/jdk/hotspot/normal/adoptopenjdk"
+    url: "https://api.azul.com/zulu/download/community/v1.0/bundles/latest/binary/?jdk_version={{ item }}&ext=tar.gz&os=linux&arch=x86&hw_bitness=64"
     method: GET
     follow_redirects: safe
     dest: "/tmp/{{ base_install_name }}{{ item }}.tar.gz"

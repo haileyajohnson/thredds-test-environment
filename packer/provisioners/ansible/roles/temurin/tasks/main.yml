@@ -5,9 +5,9 @@
     state: directory
   loop: "{{ java_versions }}"
   loop_control:
-    label: "Create Directory for Adoptium {{ item }} Installation"
+    label: "Create Directory for Temurin {{ item }} Installation"
 
-# Not sure why, but sometimes we cannot fetch adoptium 11 from aws (8 works
+# Not sure why, but sometimes we cannot fetch Temurin 11 from aws (8 works
 # just fine). When that happens, we can use a local copy of the tar.gz files
 # rather than using the web API to fetch them. Uncomment the following task,
 # as well as the "when" statement under the fetch_remote task below to use
@@ -22,7 +22,7 @@
   tags: [ fetch-remote ]
   #when: packer_builder_type != "amazon-ebs"
 
-- name: Unpack Adoptium Java Installations.
+- name: Unpack Temurin Java Installations.
   unarchive:
     src: "/tmp/{{ base_install_name }}{{ item }}.tar.gz"
     dest: "{{ install_dir }}/{{ base_install_name }}{{ item }}"
@@ -31,18 +31,18 @@
     remote_src: yes
   loop: "{{ java_versions }}"
   loop_control:
-    label: "Unpack Adoptium {{ item }}"
+    label: "Unpack Temurin {{ item }}"
 
-- name: Read versions of installed Adoptium.
+- name: Read versions of installed Temurin.
   shell: "{{ install_dir }}/{{ base_install_name }}{{ item }}/bin/java -version"
   register: shell_output
   loop: "{{ java_versions }}"
   loop_control:
-    label: "Read Adoptium {{ item }} Version Information"
+    label: "Read Temurin {{ item }} Version Information"
 
-- name: Print versions of installed Adoptium Java instances.
+- name: Print versions of installed Temurin Java instances.
   debug:
     msg="{{ item.stderr_lines[1] }}"
   loop: "{{ shell_output.results }}"
   loop_control:
-    label: "Adoptium {{ item.item }} Version:"
+    label: "Temurin {{ item.item }} Version:"

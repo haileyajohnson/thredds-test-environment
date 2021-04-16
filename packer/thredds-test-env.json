@@ -85,7 +85,6 @@
         "\"thredds_test_user={{ user `thredds_test_user`}}\""
       ],
       "role_paths": [
-        "provisioners/ansible/roles/adoptium",
         "provisioners/ansible/roles/cleanup",
         "provisioners/ansible/roles/general-packages",
         "provisioners/ansible/roles/gradle-builds-cache-bootstrap",
@@ -94,7 +93,9 @@
         "provisioners/ansible/roles/maven",
         "provisioners/ansible/roles/miniconda",
         "provisioners/ansible/roles/security",
-        "provisioners/ansible/roles/thredds-test-data-mount-prep"
+        "provisioners/ansible/roles/temurin",
+        "provisioners/ansible/roles/thredds-test-data-mount-prep",
+        "provisioners/ansible/roles/zulu"
       ],
       "playbook_file": "provisioners/ansible/site.yml",
       "galaxy_file": "provisioners/ansible/requirements.yml",
