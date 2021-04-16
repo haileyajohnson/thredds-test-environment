@@ -4,15 +4,11 @@
     "aws_secret_key": "",
     "thredds_test_user": "ubuntu",
     "base_ami": "ubuntu/images/hvm-ssd/ubuntu-focal-20.04-amd64-server-*",
-    "base_docker_image": "ubuntu:20.04",
-    "gha_actor": "{{env `github.actor`}}",
-    "gha_token": "{{env `secrets.GITHUB_TOKEN`}}"
+    "base_docker_image": "ubuntu:20.04"
   },
   "sensitive-variables": [
     "aws_access_key",
-    "aws_secret_key",
-    "gha_actor",
-    "gha_token"
+    "aws_secret_key"
   ],
   "builders": [
     {
@@ -129,7 +125,7 @@
     },
     {
       "type": "shell",
-      "inline": ["dox2unix /entrypoint.sh"],
+      "inline": ["dos2unix /entrypoint.sh"],
       "only": [ "docker-github-action" ]
     },
     {
@@ -146,15 +142,8 @@
     },
     {
       "type": "docker-tag",
-      "repository": "ghcr.io/unidata/thredds-test-environment/thredds-test-action",
+      "repository": "docker.pkg.github.com/unidata/thredds-test-environment/thredds-test-action",
       "tags": "latest",
-      "only": [ "docker-github-action" ]
-    },
-    {
-      "type": "docker-push",
-      "login_username": "{{user `gha_actor`}}",
-      "login_password": "{{user `gha_token`}}",
-      "login_server": "https://ghcr.io/",
       "only": [ "docker-github-action" ]
     }
   ]
