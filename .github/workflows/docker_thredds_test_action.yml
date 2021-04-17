@@ -10,14 +10,10 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v2
-      - uses: hashicorp/packer-github-actions@master
-        with:
-          command: init
-          working_directory: .github/packer_files
-          target: plugins.pkr.json
-      - uses: hashicorp/packer-github-actions@master
-        with:
-          command: build
-          arguments: "--only=docker-github-action"
-          working_directory: packer
-          target: thredds-test-env.json
+      - name: Execute Packer
+        run: |
+          cd packer
+          packer build --only=docker-github-action thredds-test-env.json
+          docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
+          docker push docker.pkg.github.com/unidata/thredds-test-environment/thredds-test-action:latest
+          docker logout docker.pkg.github.com
