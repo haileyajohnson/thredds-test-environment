@@ -43,6 +43,8 @@ packer build --only=<type> thredds-test-env.json
 * `ami`: Provision an AWS EC2 instance and generate an AMI (`thredds-test-environment-<iso-timestamp>`)
 * `docker-commit`: Provision a Docker container and generate and tag a local Docker Image (`docker.unidata.ucar.edu/thredds-test-environment:latest`).
 * `docker-export`: Provision a Docker container and generate a local Docker Image as a file (`image.tar`).
+* `docker-github-action`: Provision a Docker container for use with GitHub Actions and publish to the GitHub Package Repository.
+* `docker-github-action-nexus`: Same as `docker-github-action`, but publish to the Unidata Nexus Repository.
 
 Typically, we would run the following to update the AMI and Docker Image at the same time:
 
@@ -132,6 +134,7 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
 ### Bash functions:
  * `select-java <version> <vendor>` (where version is 8, 11, or 14, and vendor is `adopt` or `zulu`)
  * `activate-conda`
+ * `get_pw <key>`
 
 ### Latest version available via the OS Package Manager
   * sed
