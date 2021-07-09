@@ -75,6 +75,17 @@
         "ENV GITHUB_ACTIONS=\"YEP\"",
         "ENTRYPOINT [\"/entrypoint.sh\"]"
       ]
+    },
+    {
+      "name": "docker-github-action-nexus",
+      "type": "docker",
+      "image": "{{user `base_docker_image`}}",
+      "commit": true,
+      "changes": [
+        "USER root",
+        "ENV GITHUB_ACTIONS=\"YEP\"",
+        "ENTRYPOINT [\"/entrypoint.sh\"]"
+      ]
     }
   ],
   "provisioners": [
@@ -96,7 +107,7 @@
       "type": "file",
       "source": "provisioners/file/entrypoint.sh",
       "destination": "/entrypoint.sh",
-      "only": [ "docker-github-action" ]
+      "only": [ "docker-github-action", "docker-github-action-nexus" ]
     },
     {
       "type": "ansible-local",
@@ -126,7 +137,7 @@
     {
       "type": "shell",
       "inline": ["dos2unix /entrypoint.sh"],
-      "only": [ "docker-github-action" ]
+      "only": [ "docker-github-action", "docker-github-action-nexus" ]
     },
     {
       "type": "shell",
@@ -145,6 +156,12 @@
       "repository": "docker.pkg.github.com/unidata/thredds-test-environment/thredds-test-action",
       "tags": "latest",
       "only": [ "docker-github-action" ]
+    },
+    {
+      "type": "docker-tag",
+      "repository": "docker.unidata.ucar.edu/thredds-test-action",
+      "tags": "latest",
+      "only": [ "docker-github-action-nexus" ]
     }
   ]
 }
