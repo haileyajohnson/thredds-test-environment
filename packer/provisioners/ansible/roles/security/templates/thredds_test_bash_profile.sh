@@ -78,5 +78,27 @@ function select-java() {
     fi
 }
 
+# get_pw id
+# example:
+#    get_pw password_key
+#
+# Returns the password associated with the password_key as stored in an
+# ansible vault encrypted file.
+#
+# When decrypted, each line of the vault file should be of the form
+# key=value. An environment variable, TV, must be defined and point to
+# the location of the file encrypted by ansible vault. A second
+# environment variable, AVP, should point to a file containing the
+# vault password or a script capiable of of producing the password.
+function get_pw() {
+  # Caller must supply exactly one argument.
+  if [ ! $# -eq 1 ]
+  then
+    echo "Invalid arguments. Must supply a key contained in the vault."
+  else
+    ansible-vault view --vault-password-file $AVP $TV | grep "^$1" | cut -d"=" -f2-
+  fi
+}
+
 # Update the path to pickup additions from DEFAULT_PATH variable.
 update-path
