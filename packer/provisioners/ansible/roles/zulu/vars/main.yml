@@ -4,4 +4,4 @@ base_install_name: zulu
 java_versions:
   - 8
   - 11
-  - 14
+  - 16
