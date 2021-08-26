@@ -105,10 +105,10 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
 
 ### netCDF-C
  * location: `/usr/thredds-test-environment`
- * version: `4.7.4`
+ * version: `4.8.1`
  * dependencies (same location):
    * zlib version: `1.2.11`
-   * hdf5 version: `1.12.0`
+   * hdf5 version: `1.12.1`
 
 ### miniconda
  * location: `/usr/thredds-test-environment/miniconda3`
@@ -119,20 +119,20 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
  * version: `3.6.3`
 
 ### Java:
- * Temurin (latest version available from adoptopenjdk.net, _not officially called Temurin yet_)
+ * Temurin (latest version available from adoptium.net)
    * 8 (`/usr/thredds-test-environment/temurin8`)
    * 11 (`/usr/thredds-test-environment/temurin11`)
-   * 14 (`/usr/thredds-test-environment/temurin14`)
+   * 16 (`/usr/thredds-test-environment/temurin16`)
  * Zulu (latest version available from azul.com)
    * 8 (`/usr/thredds-test-environment/zulu8`)
    * 11 (`/usr/thredds-test-environment/zulu11`)
-   * 14 (`/usr/thredds-test-environment/zulu14`)
+   * 16 (`/usr/thredds-test-environment/zulu16`)
 
 ### Ruby
   * ruby (via [geerlingguy.ruby](https://galaxy.ansible.com/geerlingguy/ruby) from [Ansible Galaxy](https://galaxy.ansible.com/))
 
 ### Bash functions:
- * `select-java <version> <vendor>` (where version is 8, 11, or 14, and vendor is `adopt` or `zulu`)
+ * `select-java <version> <vendor>` (where version is 8, 11, or 16, and vendor is `temurin` or `zulu`)
  * `activate-conda`
  * `get_pw <key>`
 
