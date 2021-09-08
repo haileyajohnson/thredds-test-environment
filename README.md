@@ -27,7 +27,7 @@ However, Since Ansible does not support the use of Windows systems as a control 
 
 ## Building the images
 
-To generate the golden AMI and Docker images, start off by validating the packer configuration by running:
+To generate the golden AMI and Docker images, start off by validating the packer configuration by first moving into the `packer/` directory and then running:
 
 ~~~bash
 packer validate thredds-test-env.json
@@ -43,13 +43,13 @@ packer build --only=<type> thredds-test-env.json
 * `ami`: Provision an AWS EC2 instance and generate an AMI (`thredds-test-environment-<iso-timestamp>`)
 * `docker-commit`: Provision a Docker container and generate and tag a local Docker Image (`docker.unidata.ucar.edu/thredds-test-environment:latest`).
 * `docker-export`: Provision a Docker container and generate a local Docker Image as a file (`image.tar`).
-* `docker-github-action`: Provision a Docker container for use with GitHub Actions and publish to the GitHub Package Repository.
+* `docker-github-action`: Provision a Docker container for use with GitHub Actions and publish to the GitHub Package Repository (runs using manual `workflow_dispatch` trigger on github actions).
 * `docker-github-action-nexus`: Same as `docker-github-action`, but publish to the Unidata Nexus Repository.
 
-Typically, we would run the following to update the AMI and Docker Image at the same time:
+Typically, we would run the following to update the AMI and Github Action Docker Image (hosted on Nexus) at the same time:
 
 ~~~bash
-packer build --only=docker-commit,ami thredds-test-env.json
+packer build --only=ami,docker-github-action-nexus thredds-test-env.json
 ~~~
 
 The Docker Image build takes about 1 hour to create, where as the AMI build takes around 30 minutes.
@@ -105,10 +105,10 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
 
 ### netCDF-C
  * location: `/usr/thredds-test-environment`
- * version: `4.7.4`
+ * version: `4.8.1`
  * dependencies (same location):
    * zlib version: `1.2.11`
-   * hdf5 version: `1.12.0`
+   * hdf5 version: `1.12.1`
 
 ### miniconda
  * location: `/usr/thredds-test-environment/miniconda3`
@@ -119,20 +119,22 @@ We also use a role from [Ansible Galaxy](https://galaxy.ansible.com/) to setup a
  * version: `3.6.3`
 
 ### Java:
- * Temurin (latest version available from adoptopenjdk.net, _not officially called Temurin yet_)
+ * Temurin (latest version available from adoptium.net)
    * 8 (`/usr/thredds-test-environment/temurin8`)
    * 11 (`/usr/thredds-test-environment/temurin11`)
-   * 14 (`/usr/thredds-test-environment/temurin14`)
+   * 16 (`/usr/thredds-test-environment/temurin16`)
  * Zulu (latest version available from azul.com)
    * 8 (`/usr/thredds-test-environment/zulu8`)
    * 11 (`/usr/thredds-test-environment/zulu11`)
    * 14 (`/usr/thredds-test-environment/zulu14`)
+   * 16 (`/usr/thredds-test-environment/zulu16`)
 
 ### Ruby
   * ruby (via [geerlingguy.ruby](https://galaxy.ansible.com/geerlingguy/ruby) from [Ansible Galaxy](https://galaxy.ansible.com/))
 
 ### Bash functions:
- * `select-java <version> <vendor>` (where version is 8, 11, or 14, and vendor is `adopt` or `zulu`)
+ * `select-java <version> <vendor>` (where version is 8, 11, 14, or 16, and vendor is `temurin` or `zulu`)
+   * note that Temurin does not have a version 14 binary at this time.
  * `activate-conda`
  * `get_pw <key>`
 
