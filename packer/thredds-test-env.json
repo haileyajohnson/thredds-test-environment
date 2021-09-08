@@ -153,7 +153,7 @@
     },
     {
       "type": "docker-tag",
-      "repository": "ghcr.io/unidata/thredds-test-action",
+      "repository": "ghcr.io/unidata/thredds-test-environment/thredds-test-action",
       "tags": "v2",
       "only": [ "docker-github-action" ]
     },
