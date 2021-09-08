@@ -27,7 +27,7 @@ However, Since Ansible does not support the use of Windows systems as a control 
 
 ## Building the images
 
-To generate the golden AMI and Docker images, start off by validating the packer configuration by running:
+To generate the golden AMI and Docker images, start off by validating the packer configuration by first moving into the `packer/` directory and then running:
 
 ~~~bash
 packer validate thredds-test-env.json
@@ -43,13 +43,13 @@ packer build --only=<type> thredds-test-env.json
 * `ami`: Provision an AWS EC2 instance and generate an AMI (`thredds-test-environment-<iso-timestamp>`)
 * `docker-commit`: Provision a Docker container and generate and tag a local Docker Image (`docker.unidata.ucar.edu/thredds-test-environment:latest`).
 * `docker-export`: Provision a Docker container and generate a local Docker Image as a file (`image.tar`).
-* `docker-github-action`: Provision a Docker container for use with GitHub Actions and publish to the GitHub Package Repository.
+* `docker-github-action`: Provision a Docker container for use with GitHub Actions and publish to the GitHub Package Repository (runs using manual `workflow_dispatch` trigger on github actions).
 * `docker-github-action-nexus`: Same as `docker-github-action`, but publish to the Unidata Nexus Repository.
 
-Typically, we would run the following to update the AMI and Docker Image at the same time:
+Typically, we would run the following to update the AMI and Github Action Docker Image (hosted on Nexus) at the same time:
 
 ~~~bash
-packer build --only=docker-commit,ami thredds-test-env.json
+packer build --only=ami,docker-github-action-nexus thredds-test-env.json
 ~~~
 
 The Docker Image build takes about 1 hour to create, where as the AMI build takes around 30 minutes.
