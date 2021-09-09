@@ -153,14 +153,14 @@
     },
     {
       "type": "docker-tag",
-      "repository": "ghcr.io/unidata/thredds-test-environment/thredds-test-action",
+      "repository": "ghcr.io/unidata/thredds-test-action",
       "tags": "v2",
       "only": [ "docker-github-action" ]
     },
     {
       "type": "docker-tag",
       "repository": "docker.unidata.ucar.edu/thredds-test-action",
-      "tags": "latest",
+      "tags": "v2",
       "only": [ "docker-github-action-nexus" ]
     }
   ]

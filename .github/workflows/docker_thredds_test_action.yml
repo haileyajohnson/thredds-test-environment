@@ -14,6 +14,6 @@ jobs:
         run: |
           cd packer
           packer build --only=docker-github-action thredds-test-env.json
-          docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} docker.pkg.github.com
-          docker push docker.pkg.github.com/unidata/thredds-test-environment/thredds-test-action:latest
+          docker login --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} ghcr.io
+          docker push ghcr.io/unidata/thredds-test-action:v2
           docker logout docker.pkg.github.com
