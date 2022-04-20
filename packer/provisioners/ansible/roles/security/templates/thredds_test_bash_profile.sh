@@ -50,17 +50,17 @@ function select-java() {
             VALID=${VALID:4}
             echo "Invalid value \"${VENDOR}\". Vendor must be one of [ ${VALID} ]"
         else
-            MAYBE_JAVA_HOME="{{ install_dir }}/${VENDOR}${VERSION}"
+            MAYBE_JAVA_TEST_HOME="{{ install_dir }}/${VENDOR}${VERSION}"
             # Ensure the combination of vendor and version is available on the system.
-            if [ -d ${MAYBE_JAVA_HOME} ]
+            if [ -d ${MAYBE_JAVA_TEST_HOME} ]
             then
-                export JAVA_HOME=${MAYBE_JAVA_HOME}
+                export JAVA_TEST_HOME=${MAYBE_JAVA_TEST_HOME}
                 update-path
                 # If we reach this point, consider the function call successful by
                 # setting variable SUCCESS (value does not matter)
                 SUCCESS="SET"
             else
-                echo "Error: Directory ${MAYBE_JAVA_HOME} does not exists."
+                echo "Error: Directory ${MAYBE_JAVA_TEST_HOME} does not exists."
             fi
         fi
     fi
@@ -69,9 +69,9 @@ function select-java() {
     # print out a message that describes the status of JAVA_HOME
     if [ -z ${SUCCESS+x} ]
     then
-        if ! [ -z "${JAVA_HOME}" ]
+        if ! [ -z "${JAVA_TEST_HOME}" ]
         then
-            echo "Will continue to use JAVA_HOME=${JAVA_HOME}"
+            echo "Will continue to use JAVA_HOME=${JAVA_TEST_HOME}"
         else
             echo "JAVA_HOME will remain unset."
         fi
